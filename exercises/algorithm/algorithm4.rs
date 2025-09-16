@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -50,11 +49,56 @@ where
 
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
-        //TODO
+        if self.root.is_none() {
+            self.root = Some(Box::new(TreeNode::new(value)));
+            return;
+        }
+        let mut u = &mut self.root;
+        loop {
+            if value < u.as_ref().unwrap().value {
+                if u.as_mut().unwrap().left.is_some() {
+                    u = &mut u.as_mut().unwrap().left;
+                } else {
+                    u.as_mut().unwrap().left = Some(Box::new(TreeNode::new(value)));
+                    break;
+                }
+            } else if value > u.as_ref().unwrap().value {
+                if u.as_mut().unwrap().right.is_some() {
+                    u = &mut u.as_mut().unwrap().right;
+                } else {
+                    u.as_mut().unwrap().right = Some(Box::new(TreeNode::new(value)));
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
+
+        if self.root.is_none() {
+            return false;
+        }
+        let mut u = &self.root;
+        loop {
+            if value < u.as_ref().unwrap().value {
+                if u.as_ref().unwrap().left.is_some() {
+                    u = &u.as_ref().unwrap().left;
+                } else {
+                    return false;
+                }
+            } else if value > u.as_ref().unwrap().value {
+                if u.as_ref().unwrap().right.is_some() {
+                    u = &u.as_ref().unwrap().right;
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        }
         //TODO
         true
     }

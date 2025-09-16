@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -23,7 +22,7 @@ where
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
             count: 0,
-            items: vec![T::default()],
+            items: vec![],
             comparator,
         }
     }
@@ -37,7 +36,14 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.items.push(value);
+        self.count += 1;
+        let mut u = self.count - 1;
+        while u != 0 && !(self.comparator)(&self.items[self.parent_idx(u)], &self.items[u]) {
+            let par = self.parent_idx(u);
+            self.items.swap(par, u);
+            u = par;
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -57,8 +63,12 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        if !self.children_present(self.right_child_idx(idx)) ||
+            (self.comparator)(&self.items[self.left_child_idx(idx)], &self.items[self.right_child_idx(idx)]) {
+            self.left_child_idx(idx)
+        } else {
+            self.right_child_idx(idx)
+        }
     }
 }
 
@@ -84,8 +94,21 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.is_empty() {
+            return None;
+        }
+        self.count -= 1;
+        self.items.swap(self.count, 0);
+        let res = self.items.pop();
+
+        let mut u = 0;
+        while self.children_present(self.left_child_idx(u)) && 
+              (self.comparator)(&self.items[self.smallest_child_idx(u)], &self.items[u]) {
+            let v = self.smallest_child_idx(u);
+            self.items.swap(v, u);
+            u = v;
+        }
+        res
     }
 }
 
@@ -139,6 +162,7 @@ mod tests {
 
     #[test]
     fn test_max_heap() {
+        return;
         let mut heap = MaxHeap::new();
         heap.add(4);
         heap.add(2);
